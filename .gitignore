@@ -137,3 +137,10 @@ dmypy.json
 
 vectorstore.pkl
 langchain.readthedocs.io/
+
+# data
+data/questions
+data/vectorstores
+
+# credentials
+credentials.env

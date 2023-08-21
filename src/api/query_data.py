@@ -72,11 +72,16 @@ def get_chain_RetrievalQA(
         callback_manager=stream_manager,
         verbose=True,
         temperature=0,
+        max_tokens=256,
+        batch_size=1,
+        max_retries=1
+
     )
 
-    qa = RetrievalQA.from_chain_type(
+    qa = RetrievalQA.from_llm(
         streaming_llm,
         retriever=vectorstore.as_retriever(),
         callback_manager=manager,
+        #max_tokens_limit=1000
     )
     return qa
