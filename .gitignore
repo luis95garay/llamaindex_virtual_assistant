@@ -139,8 +139,8 @@ vectorstore.pkl
 langchain.readthedocs.io/
 
 # data
-data/questions
-data/vectorstores
+*.csv
+*.pkl
 
 # credentials
 credentials.env
