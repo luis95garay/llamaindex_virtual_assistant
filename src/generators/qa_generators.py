@@ -1,44 +1,81 @@
-from .generators import OpenAIGenerator
 import json
 import pandas as pd
+from .prompt_templates import question_template, answer_template
+from . import GENERATORS_MAPPING
+from langchain.chains.llm import LLMChain
 
 
-class QApipeline:
+class QAgenerator:
+    """
+    A class for generating and answering questions using language models.
+
+    This class provides a pipeline for generating questions and answers
+    using language models. It takes a generator name as input and uses
+    predefined templates for generating and answering questions.
+
+    """
     def __init__(
             self,
-            generator=OpenAIGenerator
+            generator: str = "openai"
             ) -> None:
+        """
+        Initialize the QApipeline instance.
 
-        self.generator = generator()
+        Args:
+            generator (str, optional): The name of the generator to use.
+            Defaults to "openai".
+        """
+        llm_questions = GENERATORS_MAPPING[generator]["questions"]
+        llm_answers = GENERATORS_MAPPING[generator]["answers"]
+        self.llm_chain_questions = LLMChain(
+            prompt=question_template, llm=llm_questions
+            )
+        self.llm_chain_answers = LLMChain(
+            prompt=answer_template, llm=llm_answers
+            )
 
     def generate_questions(self) -> str:
-        # Create prompt for question generation
-        output = "una única llave ""question"" y las preguntas dentro de una lista python"
-        prompt_template = f"""
-                      Puedes generar preguntas a partir del siguiente texto y generarlas con el siguiente formato diccionario de python?
-                      formato de salida:
-                      {output}
+        """
+        Generate questions based on the provided document.
 
-                      texto de entrada:
-                      "{self.document}"
-                      """
-
-        # Generate questions
-        return self.generator(prompt_template)
+        Returns:
+            str: The generated questions.
+        """
+        kwards = {"document": self.document, "context": self.context}
+        return self.llm_chain_questions.run(**kwards)
 
     def answer(self, row) -> str:
-        # Create prompt for answer generation
-        prompt_template = f"""
-                      Bajo el siguiente contexto, puedes responder la siguiente pregunta:
-                      "{row}"
-                      Contexto:
-                      "{self.document}"
-                      """
-        return self.generator(prompt_template)
+        """
+        Answer a question based on the provided row data.
 
-    def __call__(self, document: str) -> pd.DataFrame:
+        Args:
+            row: The question to answer
 
+        Returns:
+            str: The generated answer.
+        """
+        kwards = {"row": row, "document": self.document}
+        return self.llm_chain_answers.run(**kwards)
+
+    def __call__(
+            self,
+            document: str,
+            context: str
+            ) -> pd.DataFrame:
+        """
+        Generate questions and answers for the provided document.
+
+        Args:
+            document (str): The document for which to generate
+            questions and answers.
+            context (str): Explanation of the source to extract
+
+        Returns:
+            pd.DataFrame: A DataFrame containing generated
+            questions and their answers.
+        """
         self.document = document
+        self.context = context
 
         # Generate questions:
         response = self.generate_questions()
