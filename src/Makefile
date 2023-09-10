@@ -1,6 +1,6 @@
 .PHONY: start
 start:
-	uvicorn api.main:app --reload --port 9000
+	uvicorn api.main:app --reload --port 9001
 
 .PHONY: format
 format:

@@ -135,12 +135,12 @@ dmypy.json
 
 .DS_Store
 
-vectorstore.pkl
+# vectorstore.pkl
 langchain.readthedocs.io/
 
 # data
-*.csv
-*.pkl
+# *.csv
+# *.pkl
 
 # credentials
 credentials.env
