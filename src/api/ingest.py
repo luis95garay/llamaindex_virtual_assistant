@@ -2,7 +2,7 @@
 import pickle
 
 from langchain.document_loaders import (
-    ReadTheDocsLoader, AsyncHtmlLoader, WebBaseLoader, RecursiveUrlLoader
+    ReadTheDocsLoader, AsyncHtmlLoader, PyMuPDFLoader, RecursiveUrlLoader
 )
 from bs4 import BeautifulSoup as Soup
 from langchain.embeddings import OpenAIEmbeddings
@@ -13,9 +13,7 @@ from dotenv import load_dotenv
 
 def ingest_docs():
     """Get documents from web pages."""
-    # loader = WebBaseLoader(["https://mibluemedical.com/blue-medical-ubicaciones/"])
-    # loader = ReadTheDocsLoader("rtdocs", features="xml", encoding="utf8")
-    loader = RecursiveUrlLoader("https://mibluemedical.com/", extractor=lambda x: Soup(x, "html.parser").text)
+    loader = PyMuPDFLoader("C:/Users/Luis Fernando/Documents/langchain_virtual_assistant/E75F3.PDF")
     raw_documents = loader.load()
     text_splitter = RecursiveCharacterTextSplitter(
         chunk_size=1000,
